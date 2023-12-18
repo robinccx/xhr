@@ -1,0 +1,11 @@
+ecs:
+121.43.62.145
+administrator
+Xiao339662
+
+mysql:
+root
+XiaoDb1234!QAZ
+
+http://xhr.aisxiao.com:30001/swagger
+http://xhr.aisxiao.com:30001/hr
