@@ -2,9 +2,9 @@
 gfcli:
   gen:
     dao:
-      - link:            "mysql:gfast3:gfast333@tcp(127.0.0.1:3306)/gfast-v32"
-        tables:          "sys_role_dept"
-        removePrefix:    "gf_"
+      - link:            "mysql:root:KY1234@tcp(localhost:3306)/xhr?charset=utf8mb4&parseTime=true&loc=Local"
+        tables:          "t_department,t_nurse,t_title"
+        removePrefix:    "t_"
         descriptionTag:  true
         noModelComment:  true
-        path: "./internal/app/system"
+        path: "./internal/app/demo"

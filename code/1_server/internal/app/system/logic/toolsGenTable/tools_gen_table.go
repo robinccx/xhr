@@ -142,10 +142,13 @@ func (s *sToolsGenTable) SelectDbTableListByNames(ctx context.Context, tableName
 
 // ImportGenTable 导入表结构
 func (s *sToolsGenTable) ImportGenTable(ctx context.Context, tableList []*entity.ToolsGenTable) error {
+
 	if tableList != nil {
 		err := g.DB().Transaction(ctx, func(ctx context.Context, tx gdb.TX) error {
 			err := g.Try(ctx, func(ctx context.Context) {
+				var isNew bool
 				for _, table := range tableList {
+					isNew = true
 					tableName := table.TableName
 					// 保存列信息
 					genTableColumns, err := service.ToolsGenTableColumn().SelectDbTableColumnsByName(ctx, tableName)
@@ -153,17 +156,35 @@ func (s *sToolsGenTable) ImportGenTable(ctx context.Context, tableList []*entity
 					if len(genTableColumns) <= 0 {
 						liberr.ErrIsNil(ctx, gerror.New("获取列数据失败"))
 					}
-					err = s.InitTable(ctx, table, genTableColumns)
-					liberr.ErrIsNil(ctx, err)
-					result, err1 := tx.Model(dao.ToolsGenTable.Table()).Insert(table)
-					liberr.ErrIsNil(ctx, err1)
-					tmpId, err2 := result.LastInsertId()
-					liberr.ErrIsNil(ctx, err2, "保存数据失败")
-					if tmpId <= 0 {
-						liberr.ErrIsNil(ctx, gerror.New("保存数据失败"))
+
+					var dbTable *entity.ToolsGenTable
+					err = dao.ToolsGenTable.Ctx(ctx).Where("table_name=?", tableName).Scan(&dbTable)
+					if err == nil && dbTable != nil {
+						table.TableId = dbTable.TableId
+						isNew = false
+					} else {
+						err = s.InitTable(ctx, table, genTableColumns)
+						liberr.ErrIsNil(ctx, err)
+						result, err1 := tx.Model(dao.ToolsGenTable.Table()).Insert(table)
+						liberr.ErrIsNil(ctx, err1)
+						tmpId, err2 := result.LastInsertId()
+						liberr.ErrIsNil(ctx, err2, "保存数据失败")
+						if tmpId <= 0 {
+							liberr.ErrIsNil(ctx, gerror.New("保存数据失败"))
+						}
+						table.TableId = tmpId
 					}
-					table.TableId = tmpId
+
 					for _, column := range genTableColumns {
+						if !isNew {
+							var dbColumn *entity.ToolsGenTableColumn
+							err = dao.ToolsGenTableColumn.Ctx(ctx).Where(" table_id=? and column_name=?", table.TableId, column.ColumnName).Scan(&dbColumn)
+							if err == nil && dbColumn != nil {
+								// 字段已不存，不插入
+								continue
+							}
+						}
+
 						service.ToolsGenTableColumn().InitColumnField(column, table)
 						_, err3 := tx.Model(dao.ToolsGenTableColumn.Table()).Insert(column)
 						liberr.ErrIsNil(ctx, err3, "保存列数据失败")
@@ -980,6 +1001,9 @@ func (s *sToolsGenTable) GenCode(ctx context.Context, ids []int) (err error) {
 			g.Log().Error(ctx, "前端路径不存在:"+frontDir)
 			panic("项目前端路径不存在，请检查是否已在配置文件中配置！")
 		}
+		g.Log().Debug(ctx, "生成前端代码1:"+frontDir)
+		g.Log().Info(ctx, "生成前端代码2:"+frontDir)
+		g.Log().Error(ctx, "生成前端代码3:"+frontDir)
 		apiName := g.Cfg().MustGet(ctx, "gen.apiName").String()
 		goModName := g.Cfg().MustGet(ctx, "gen.goModName").String()
 		for _, id := range ids {

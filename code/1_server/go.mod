@@ -8,6 +8,7 @@ require (
 	github.com/gogf/gf/contrib/drivers/mysql/v2 v2.2.5
 	github.com/gogf/gf/contrib/nosql/redis/v2 v2.3.0
 	github.com/gogf/gf/v2 v2.3.2
+	github.com/google/uuid v1.4.0 // indirect
 	github.com/mattn/go-colorable v0.1.13 // indirect
 	github.com/mattn/go-runewidth v0.0.14 // indirect
 	github.com/mojocn/base64Captcha v1.3.5

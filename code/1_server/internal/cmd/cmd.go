@@ -14,7 +14,6 @@ import (
 )
 
 var (
-
 	Main = gcmd.Command{
 		Name:  "main",
 		Usage: "main",
@@ -26,10 +25,11 @@ var (
 			s.Group("/", func(group *ghttp.RouterGroup) {
 				router.R.BindController(ctx, group)
 			})
+
 			//重新配置swaggerUI静态页面--start--,若要使用原版gf字段swaggerUI请删除或注释此段
-			s.BindHookHandler(g.Cfg().MustGet(ctx,"server.swaggerPath").String()+"/*", ghttp.HookBeforeServe, func(r *ghttp.Request) {
+			s.BindHookHandler(g.Cfg().MustGet(ctx, "server.swaggerPath").String()+"/*", ghttp.HookBeforeServe, func(r *ghttp.Request) {
 				content := gstr.ReplaceByMap(consts.SwaggerUITemplate, map[string]string{
-					`{SwaggerUIDocUrl}`: g.Cfg().MustGet(ctx, "server.openapiPath").String(),
+					`{SwaggerUIDocUrl}`:             g.Cfg().MustGet(ctx, "server.openapiPath").String(),
 					`{SwaggerUIDocNamePlaceHolder}`: gstr.TrimRight(fmt.Sprintf(`//%s`, r.Host)),
 				})
 				r.Response.Write(content)
