@@ -2,7 +2,7 @@
   <div class="archive-department-container">
     <el-card shadow="hover">
         <div class="archive-department-search mb15">
-            <el-form :model="tableData.param" ref="queryRef" :inline="true" label-width="100px">
+            <el-form :model="tableData.param" ref="queryRef" :inline="true" label-width="80px">
             <el-row>                
                 <el-col :span="5" class="colBlock">
                   <el-form-item label="科室代码" prop="deptCode">

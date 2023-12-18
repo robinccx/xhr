@@ -497,11 +497,11 @@ export default defineComponent({
 				getname.push(d.itemName);
 			})
 
-			const colorList = ['#51A3FC', '#36C78B', '#FEC279', '#968AF5', '#E790E8'];
+			const colorList = ['#51A3FC', '#36C78B', '#FEC279', '#968AF5', '#E790E8','#fe9a8b'];
 			const option = {
 				backgroundColor: state.charts.bgColor,
 				title: {
-					text: '学历',
+					text: '职称',
 					x: 'left',
 					textStyle: { fontSize: '15', color: state.charts.color },
 				},
