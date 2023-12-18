@@ -38,11 +38,15 @@ func (c *loginController) Login(ctx context.Context, req *system.UserLoginReq) (
 	)
 	//判断验证码是否正确
 	debug := gmode.IsDevelop()
+	g.Log().Info(ctx, "gmode.Mode:"+gmode.Mode())
 	if !debug {
+		g.Log().Info(ctx, "gmode.IsDevelop:false")
 		if !commonService.Captcha().VerifyString(req.VerifyKey, req.VerifyCode) {
 			err = gerror.New("验证码输入错误")
 			return
 		}
+	} else {
+		g.Log().Info(ctx, "gmode.IsDevelop:true")
 	}
 	ip := libUtils.GetClientIp(ctx)
 	userAgent := libUtils.GetUserAgent(ctx)
