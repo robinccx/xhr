@@ -1,0 +1,96 @@
+
+
+select * from t_temp20231201
+order by `出生年月`
+
+
+select * from t_temp20231201
+where  `出生年月`='1998-04'
+
+
+update t_temp20231201 set `出生年月`='1998-04-01'
+where `出生年月`='1998-04';
+
+
+select `姓名`,count(1) from t_temp20231201 d
+group by `姓名`
+having count(1)>1;
+
+select b.dept_id,c.education_id,d.title_id,a.* from t_temp20231201 a
+left outer join t_department b on a.`科室`=b.dept_code
+left outer join t_education c on a.`学历`=c.education_name
+left outer join t_title d on a.`职称类别`=d.title_name
+
+
+
+select d.* from t_nurse d
+order by start_date
+
+select concat('8',DATE_FORMAT(start_date,'%y%m'),8000+nurse_id),d.* from t_nurse d
+order by nurse_id
+
+update t_nurse set nurse_code=concat('8',DATE_FORMAT(start_date,'%y%m'),8000+nurse_id)
+
+select CONCAT(IFNULL(@PreCode,''),REPEAT('0',@Width-LENGTH(@PreCode)- LENGTH(convert(vSeq , char(10)))),vSeq) into vCode;
+
+
+
+select nurse_code,nurse_name,sex,birthday,dept_id,education_id,title_id,staff_type,
+start_date,end_date,
+status,created_at,created_by,updated_at,updated_by
+from t_nurse;
+
+insert into t_nurse(nurse_code,nurse_name,sex,birthday,dept_id,education_id,title_id,staff_type,start_date,
+status,created_at,created_by,updated_at,updated_by)
+
+select `姓名` nurse_code,`姓名` as nurse_name,
+case when `性别`='男' then 1 else 2 end as sex,
+DATE_FORMAT(`出生年月`,'%Y-%m-%d')birthday,
+b.dept_id,c.education_id,d.title_id,0,
+DATE_FORMAT(`来院工作时间`,'%Y-%m-%d') as start_date,
+1 as status,now(),'admin',now(),'admin'
+from t_temp20231201 a
+left outer join t_department b on a.`科室`=b.dept_code
+left outer join t_education c on a.`学历`=c.education_name
+left outer join t_title d on a.`职称类别`=d.title_name
+order by `来院工作时间` 
+
+
+ 
+
+insert into t_department(dept_code,dept_name,status,created_at,created_by,updated_at,updated_by)
+select distinct `科室`,`科室`,1,now(),'admin',now(),'admin' from t_temp20231201;
+
+insert into t_education(education_name,status,created_at,created_by,updated_at,updated_by)
+select distinct `学历`,1,now(),'admin',now(),'admin' from t_temp20231201;
+
+insert into t_title(title_name,status,created_at,created_by,updated_at,updated_by)
+
+select distinct `职称类别`,1,now(),'admin',now(),'admin' from t_temp20231201
+order by `职称类别`;
+
+
+insert into t_nurse(nurse_code,nurse_name,status,created_at,created_by,updated_at,updated_by)
+
+select distinct `职称类别`,1,now(),'admin',now(),'admin' from t_temp20231201
+order by `职称类别`;
+
+
+select `职称类别`,count(1) from t_temp20231201
+group by `职称类别`
+order by `职称类别`;
+
+
+
+select * from t_department;
+select * from t_education;
+select * from t_nurse;
+select * from t_title;
+
+truncate table t_department;
+truncate table t_education;
+
+truncate table t_title;
+
+truncate table t_nurse;
+

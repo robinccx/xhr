@@ -1,0 +1,34 @@
+
+
+
+select n.nurse_id,2 as fromarea_id,d.dept_id as fromdept_id,n.area_id as toarea_id,n.dept_id as todept_id,a.* 
+from t_temp1_202304 a
+left outer join t_department d on a.`¿ÆÊÒ`=d.dept_name
+left outer join t_nurse n on a.`ĞÕÃû`=n.nurse_name and n.nurse_id<>1321
+where `ĞÕÃû` in ('ÖÜ¾²','ÀîæÃæÃ','ÀîÄ¾×Ó','ËÎÑ©','Ö£ÍíÍí','ÂíÜ½ÈØ','ÕÔÃ÷ÔÂ','³ÂÅå','ÕÔÀö');
+
+
+select * from t_nurse
+where nurse_name in ('ÖÜ¾²','ÀîæÃæÃ','ÀîÄ¾×Ó','ËÎÑ©','Ö£ÍíÍí','ÂíÜ½ÈØ','ÕÔÃ÷ÔÂ','³ÂÅå','ÕÔÀö')
+and nurse_id<>1321;
+
+
+select nurse_id,change_type,from_area_id,from_dept_id,from_entity_name,to_area_id,to_dept_id,trans_date,
+status,created_at,created_by
+from t_nurse_change_log d ;
+
+
+insert into t_nurse_change_log(nurse_id,change_type,from_area_id,from_dept_id,from_entity_name,
+to_area_id,to_dept_id,to_entity_name,trans_date,
+status,created_at,created_by
+)
+
+select n.nurse_id,1 as change_type,2 as fromarea_id,d.dept_id as fromdept_id,concat('¼Î¶¨ÔºÇø:',d.dept_name),
+n.area_id as toarea_id,n.dept_id as todept_id,concat('ÑîÆÖÔºÇø:',d2.dept_name),
+'2023-05-01',1,'2023-05-01','admin'
+from t_temp1_202304 a
+left outer join t_department d on a.`¿ÆÊÒ`=d.dept_name
+inner join t_nurse n on a.`ĞÕÃû`=n.nurse_name and n.nurse_id<>1321
+left outer join t_department d2 on n.dept_id=d2.dept_id
+where `ĞÕÃû` in ('ÖÜ¾²','ÀîæÃæÃ','ÀîÄ¾×Ó','ËÎÑ©','Ö£ÍíÍí','ÂíÜ½ÈØ','ÕÔÃ÷ÔÂ','³ÂÅå','ÕÔÀö');
+
